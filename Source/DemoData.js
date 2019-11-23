@@ -13,14 +13,16 @@ function DemoData()
 		var imageLibrary = new ImageLibrary
 		([
 			new Image("Agents", imageDirectory + "Agents.png"),
-			new Image("Ogre", imageDirectory + "Ogre.png"),
+			new Image("Goblin", imageDirectory + "Goblin.png"),
+			new Image("Troll", imageDirectory + "Troll.png"),
 		]);
 
 		var effectDefns = [];
 
-		var categories = 
+		var categories =
 		[
 			new Category("Consumable"),
+			new Category("Valuable"),
 			new Category("Weapon"),
 		].addLookups("name");
 
@@ -30,7 +32,7 @@ function DemoData()
 
 		var agentDefns = this.universe_3_AgentDefns(actionDefnsCommon);
 
-		var encounterDefns = 
+		var encounterDefns =
 		[
 			new EncounterDefn
 			(
@@ -41,7 +43,7 @@ function DemoData()
 					new Pane("Field_Player", new Coords(225, 0), new Coords(75, 150)),
 					new Pane("Status_Other", new Coords(0, 150), new Coords(100, 75)),
 					new Pane("Status_Player", new Coords(100, 150), new Coords(125, 75)),
-					new Pane("Menu_Player", new Coords(225, 150), new Coords(75, 75)),				
+					new Pane("Menu_Player", new Coords(225, 150), new Coords(75, 75)),
 				]
 			),
 		].addLookups("name");
@@ -53,9 +55,9 @@ function DemoData()
 			"Universe0",
 			imageLibrary,
 			actionDefnsCommon,
-			agentDefns, 
+			agentDefns,
 			effectDefns,
-			encounterDefns, 
+			encounterDefns,
 			itemDefns,
 			encounter
 		);
@@ -66,41 +68,55 @@ function DemoData()
 
 	DemoData.prototype.universe_1_ItemDefns = function(categories)
 	{
-		var itemDefns = 
+		var itemDefns =
 		[
 			// consumables
-	
+
 			new ItemDefn
 			(
-				"Heal Potion", 
-				[ categories["Consumable"].name ], 
-				// apply
-				function(item, agent, target) 
-				{ 
+				"Heal Potion",
+				[ categories["Consumable"].name ],
+				function apply(item, agent, target)
+				{
 					var items = agent.itemsInInventory;
 					items.splice
 					(
-						items.indexOf(item),
-						1
+						items.indexOf(item), 1
 					);
-					target.integrity += 20; 
+					target.integrity = Math.trimValueToMinAndMax
+					(
+						target.integrity + 20, 0, target.defn().integrityMax
+					);
 				}
 			),
 
 			new ItemDefn
 			(
-				"Energy Potion", 
-				[ categories["Consumable"].name ], 
-				// apply
-				function(item, agent, target) 
-				{ 
+				"Energy Potion",
+				[ categories["Consumable"].name ],
+				function apply(item, agent, target)
+				{
 					var items = agent.itemsInInventory;
 					items.splice
 					(
-						items.indexOf(item),
-						1
+						items.indexOf(item), 1
 					);
-					target.energy += 20; 
+					target.energy = NumberHelper.trimValueToMinAndMax
+					(
+						target.energy + 20, 0, target.defn().energyMax
+					)
+				}
+			),
+
+			// valuables
+
+			new ItemDefn
+			(
+				"Coin",
+				[ categories["Valuable"].name ],
+				function apply(item, agent, target)
+				{
+					// Do nothing.
 				}
 			),
 
@@ -108,33 +124,41 @@ function DemoData()
 
 			new ItemDefn
 			(
-				"Dagger", 
+				"Club",
 				[ categories["Weapon"].name ],
-				// apply 
-				function(item, agent, target) 
-				{ 
+				function apply(item, agent, target)
+				{
+					target.integrity -= 5;
+				}
+			),
+
+			new ItemDefn
+			(
+				"Dagger",
+				[ categories["Weapon"].name ],
+				function apply(item, agent, target)
+				{
 					target.integrity -= 2;
 				}
 			),
 
 			new ItemDefn
 			(
-				"Mace", 
-				[ categories["Weapon"].name ], 
+				"Mace",
+				[ categories["Weapon"].name ],
 				// apply
-				function(item, agent, target) 
-				{ 
+				function(item, agent, target)
+				{
 					target.integrity -= 6;
 				}
 			),
 
 			new ItemDefn
 			(
-				"Sword", 
-				[ categories["Weapon"].name ], 
-				// apply
-				function(item, agent, target) 
-				{ 
+				"Sword",
+				[ categories["Weapon"].name ],
+				function apply(item, agent, target)
+				{
 					target.integrity -= 10;
 				}
 			),
@@ -148,13 +172,13 @@ function DemoData()
 
 	DemoData.prototype.universe_2_ActionDefns = function()
 	{
-		var actionDefnsCommon = 
+		var actionDefnsCommon =
 		[
 			new ActionDefn
 			(
 				"Attack",
 				true, // requiresTarget
-				function(encounter, agent, action)
+				function perform(encounter, agent, action)
 				{
 					var target = action.target();
 					var displacementFromAgentToTarget = target.pos.clone().subtract
@@ -165,7 +189,7 @@ function DemoData()
 					var distanceToTarget = displacementFromAgentToTarget.magnitude();
 
 					var distanceToMovePerTick = 16;
-				
+
 					if (distanceToTarget > distanceToMovePerTick)
 					{
 						var displacementToMove = displacementFromAgentToTarget.divideScalar
@@ -175,11 +199,11 @@ function DemoData()
 						(
 							distanceToMovePerTick
 						);
-	
+
 						agent.pos.add(displacementToMove);
 					}
 					else
-					{	
+					{
 						var emptyToReturnTo = action.parameters["EmptyForPosToReturnTo"];
 
 						if (target.integrity == null)
@@ -193,11 +217,12 @@ function DemoData()
 							var weaponEquipped = agent.itemsEquipped["Weapon"];
 							if (weaponEquipped != null)
 							{
-								weaponEquipped.apply
-								(
-									agent,
-									target
-								);
+								weaponEquipped.apply(agent, target);
+							}
+							if (target.integrity <= 0)
+							{
+								target.integrity = 0;
+								encounter.entitiesToRemove.push(target);
 							}
 							action.target_Set(emptyToReturnTo);
 						}
@@ -210,7 +235,7 @@ function DemoData()
 			(
 				"Defend",
 				false, // requiresTarget
-				function(encounter, agent, action)
+				function perform(encounter, agent, action)
 				{
 					action.status = ActionStatus.Instances.Complete;
 				},
@@ -222,7 +247,7 @@ function DemoData()
 				"Magic",
 				true, // requiresTarget
 				// updateEncounter
-				function(encounter, agent, action)
+				function perform(encounter, agent, action)
 				{
 					action.status = ActionStatus.Instances.Complete;
 				},
@@ -246,8 +271,8 @@ function DemoData()
 						(
 							spellDefns,
 							[ "name" ], // bindingPathsForMenuText
-							function (encounter) 
-							{ 
+							function (encounter)
+							{
 								var spellDefn = this.menuable;
 								var agent = encounter.agentCurrent;
 								var action = agent.action;
@@ -267,7 +292,7 @@ function DemoData()
 			(
 				"Spell",
 				true, // requiresTarget
-				function(encounter, agent, action)
+				function perform(encounter, agent, action)
 				{
 					var target = action.target();
 					var displacementFromAgentToTarget = target.pos.clone().subtract
@@ -278,7 +303,7 @@ function DemoData()
 					var distanceToTarget = displacementFromAgentToTarget.magnitude();
 
 					var distanceToMovePerTick = 16;
-					
+
 					if (distanceToTarget > distanceToMovePerTick)
 					{
 						var displacementToMove = displacementFromAgentToTarget.divideScalar
@@ -288,13 +313,13 @@ function DemoData()
 						(
 							distanceToMovePerTick
 						);
-	
+
 						agent.pos.add(displacementToMove);
 					}
 					else
-					{	
-						var emptyToReturnTo = action.parameters["EmptyForPosToReturnTo"];					
-	
+					{
+						var emptyToReturnTo = action.parameters["EmptyForPosToReturnTo"];
+
 						if (target.integrity == null)
 						{
 							agent.pos.overwriteWith(emptyToReturnTo.pos);
@@ -309,29 +334,33 @@ function DemoData()
 								agent,
 								target
 							);
+							if (target.integrity <= 0)
+							{
+								target.integrity = 0;
+								encounter.entitiesToRemove.push(target);
+							}
 							action.target_Set(emptyToReturnTo);
 						}
 					}
 				},
 				null // toMenu
-			),		
+			),
 
 			new ActionDefn
 			(
 				"Item",
 				false, // requiresTarget
-				function(encounter, agent, action)
+				function perform(encounter, agent, action)
 				{
 					action.status = ActionStatus.Instances.Complete;
 				},
-				// toMenu
-				function()
+				function toMenu()
 				{
 					var universe = Globals.Instance.universe;
 					var encounter = universe.encounter;
 					var panes = encounter.defn().panes;
 					var agent = encounter.agentCurrent;
-					var items = agent.itemsInInventory;	
+					var items = agent.itemsInInventory;
 
 					var returnMenu = new Menu
 					(
@@ -339,17 +368,24 @@ function DemoData()
 						panes["Menu_Player"].pos, // pos
 						new Coords(0, 8), // spacing
 						null, // menuable
-						null, // updateEncounter
+						function updateEncounter(encounter)
+						{
+							var agent = encounter.agentCurrent;
+							var action = agent.action;
+							action.status = ActionStatus.Instances.None;
+						},
 						Menu.menuablesToMenus
 						(
 							items,
 							[ "defn().name" ], // bindingPathsForMenuText
-							function (encounter) 
-							{ 
+							function (encounter)
+							{
 								var item = this.menuable;
-								var agentCurrent = encounter.agentCurrent;
-								var target = agentCurrent.action.target();
-								item.apply(agentCurrent, target);
+								var agent = encounter.agentCurrent;
+								var action = agent.action;
+								action.defnName = "ItemUse";
+								agent.itemsEquipped["ItemToUse"] = item;
+								action.status = ActionStatus.Instances.AwaitingTarget;
 							}
 						),
 						0 // indexOfChildSelected
@@ -361,9 +397,61 @@ function DemoData()
 
 			new ActionDefn
 			(
+				"ItemUse",
+				true, // requiresTarget
+				function perform(encounter, agent, action)
+				{
+					var target = action.target();
+					var displacementFromAgentToTarget = target.pos.clone().subtract
+					(
+						agent.pos
+					);
+
+					var distanceToTarget = displacementFromAgentToTarget.magnitude();
+
+					var distanceToMovePerTick = 16;
+
+					if (distanceToTarget > distanceToMovePerTick)
+					{
+						var displacementToMove = displacementFromAgentToTarget.divideScalar
+						(
+							distanceToTarget
+						).multiplyScalar
+						(
+							distanceToMovePerTick
+						);
+
+						agent.pos.add(displacementToMove);
+					}
+					else
+					{
+						var emptyToReturnTo = action.parameters["EmptyForPosToReturnTo"];
+
+						if (target.integrity == null)
+						{
+							agent.pos.overwriteWith(emptyToReturnTo.pos);
+							action.target_Set(null);
+							action.status = ActionStatus.Instances.Complete;
+						}
+						else
+						{
+							var itemEquipped = agent.itemsEquipped["ItemToUse"];
+							if (itemEquipped != null)
+							{
+								itemEquipped.apply(agent, target);
+							}
+							action.target_Set(emptyToReturnTo);
+						}
+					}
+				},
+				null // toMenu
+			),
+
+			new ActionDefn
+			(
 				"Wait",
 				false, // requiresTarget
-				function(encounter, agent, action)
+				function perform(encounter, agent, action)
 				{
 					encounter.agentCurrentAdvance();
 				},
@@ -374,14 +462,14 @@ function DemoData()
 			(
 				"Run",
 				false, // requiresTarget
-				function(encounter, agent, action)
+				function perform(encounter, agent, action)
 				{
 					// todo
 					action.status = ActionStatus.Instances.Complete;
 				},
-				null // toMenu  
+				null // toMenu
 			),
-		];	
+		];
 
 		actionDefnsCommon.addLookups("name");
 
@@ -406,17 +494,17 @@ function DemoData()
 				agentText += agentDefn.name;
 				display.drawText
 				(
-					agentText, agent.pos, 
+					agentText, agent.pos,
 					display.colorFore, display.colorBack
 				);
 			}
 		);
 
-		var agentDefns = 
+		var agentDefns =
 		[
 			new AgentDefn
 			(
-				"Mage", 
+				"Mage",
 				new VisualGroup
 				([
 					new VisualFallthrough
@@ -427,14 +515,14 @@ function DemoData()
 							new Coords(0, 0).multiply
 							(
 								agentSizeInPixelsStandard
-							), 
+							),
 							agentSizeInPixelsStandard
 						),
 						new VisualRectangle
 						(
-							agentSizeInPixelsStandard, 
+							agentSizeInPixelsStandard,
 							null, // colorFill
-							"LightGray" 
+							"LightGray"
 						),
 					]),
 					visualAgentLabel,
@@ -455,19 +543,22 @@ function DemoData()
 					new SpellDefn
 					(
 						"Fire",
-						// apply 
-						function(agent, target) 
-						{ 
-							agent.energy -= 5;
-							target.integrity -= 20;
-						} 
+						function apply(agent, target)
+						{
+							var energyNeeded = 5;
+							if (agent.energy > energyNeeded)
+							{
+								agent.energy -= energyNeeded;
+								target.integrity -= 20;
+							}
+						}
 					),
 				]
-			),		
-	
+			),
+
 			new AgentDefn
 			(
-				"Priest", 
+				"Priest",
 				new VisualGroup
 				([
 					new VisualFallthrough
@@ -478,14 +569,14 @@ function DemoData()
 							new Coords(1, 0).multiply
 							(
 								agentSizeInPixelsStandard
-							), 
+							),
 							agentSizeInPixelsStandard
 						),
 						new VisualRectangle
 						(
-							agentSizeInPixelsStandard, 
+							agentSizeInPixelsStandard,
 							null, // colorFill
-							"LightGray" 
+							"LightGray"
 						),
 					]),
 					visualAgentLabel,
@@ -506,10 +597,14 @@ function DemoData()
 					new SpellDefn
 					(
 						"Heal",
-						// apply 
-						function(agent, target) 
-						{ 
-							agent.energy += 5;
+						// apply
+						function(agent, target)
+						{
+							agent.energy = NumberHelper.trimValueToMinAndMax
+							(
+								agent.energy + 5, 0, agent.defn().energyMax
+							);
+
 							var integrityToHeal = 20;
 							target.integrity = NumberHelper.trimValueToMinAndMax
 							(
@@ -517,14 +612,52 @@ function DemoData()
 								0, // min
 								target.defn().integrityMax // max
 							);
-						} 
+						}
 					),
 				]
 			),
 
 			new AgentDefn
 			(
-				"Warrior", 
+				"Rogue",
+				new VisualGroup
+				([
+					new VisualFallthrough
+					([
+						new VisualImageSlice
+						(
+							"Agents",
+							new Coords(3, 0).multiply
+							(
+								agentSizeInPixelsStandard
+							),
+							agentSizeInPixelsStandard
+						),
+						new VisualRectangle
+						(
+							agentSizeInPixelsStandard,
+							null, // colorFill
+							"LightGray"
+						),
+					]),
+					visualAgentLabel,
+				]),
+				agentSizeInPixelsStandard,
+				20, //integrityMax,
+				0, //energyMax,
+				new Range(5, 10), // initiativeRange
+				//actionDefns
+				[
+					actionDefnsCommon["Attack"],
+					actionDefnsCommon["Item"],
+					actionDefnsCommon["Wait"],
+				],
+				null // spellDefns
+			),
+
+			new AgentDefn
+			(
+				"Warrior",
 				new VisualGroup
 				([
 					new VisualFallthrough
@@ -535,14 +668,14 @@ function DemoData()
 							new Coords(2, 0).multiply
 							(
 								agentSizeInPixelsStandard
-							), 
+							),
 							agentSizeInPixelsStandard
 						),
 						new VisualRectangle
 						(
-							agentSizeInPixelsStandard, 
+							agentSizeInPixelsStandard,
 							null, // colorFill
-							"LightGray" 
+							"LightGray"
 						),
 					]),
 					visualAgentLabel,
@@ -560,19 +693,49 @@ function DemoData()
 				null // spellDefns
 			),
 
+			// non-players
+
 			new AgentDefn
 			(
-				"Ogre", 
+				"Goblin",
 				new VisualGroup
 				([
 					new VisualFallthrough
 					([
-						new VisualImage("Ogre"),
+						new VisualImage("Goblin"),
 						new VisualRectangle
 						(
-							new Coords(40, 40), 
+							new Coords(24, 24),
 							null, // colorFill
-							"LightGray" 
+							"LightGray"
+						),
+					]),
+					visualAgentLabel,
+				]),
+				new Coords(40, 40), // size
+				8, //integrityMax,
+				0, //energyMax,
+				new Range(1, 10), // initiativeRange
+				//actionDefns
+				[
+					actionDefnsCommon["Attack"],
+				],
+				null // spellDefns
+			),
+
+			new AgentDefn
+			(
+				"Troll",
+				new VisualGroup
+				([
+					new VisualFallthrough
+					([
+						new VisualImage("Troll"),
+						new VisualRectangle
+						(
+							new Coords(40, 40),
+							null, // colorFill
+							"LightGray"
 						),
 					]),
 					visualAgentLabel,
@@ -586,7 +749,7 @@ function DemoData()
 					actionDefnsCommon["Attack"],
 				],
 				null // spellDefns
-			),	
+			),
 		];
 
 		agentDefns.addLookups("name");
@@ -608,9 +771,9 @@ function DemoData()
 					[
 						new Agent
 						(
-							"One", 
+							"One",
 							agentDefns["Mage"].name,
-							new Coords(256, 20), 
+							new Coords(256, 20),
 							// itemsEquipped
 							[
 								new Item(itemDefns["Dagger"].name)
@@ -620,7 +783,7 @@ function DemoData()
 								new Item(itemDefns["Energy Potion"].name),
 								new Item(itemDefns["Energy Potion"].name),
 								new Item(itemDefns["Energy Potion"].name),
-							] 
+							]
 						),
 						new Agent
 						(
@@ -651,11 +814,11 @@ function DemoData()
 						new Agent
 						(
 							"Four",
-							agentDefns["Mage"].name,
+							agentDefns["Rogue"].name,
 							new Coords(256, 110),
 							// itemsEquipped
 							[
-							new Item(itemDefns["Dagger"].name)
+								new Item(itemDefns["Dagger"].name)
 							],
 							[] // itemsInInventory
 						),
@@ -664,43 +827,43 @@ function DemoData()
 				new Party
 				(
 					"Other",
-					new IntelligenceHuman(),
+					new IntelligenceMachine(),
 					[
 						new Agent
 						(
 							null, // name
-							agentDefns["Ogre"].name,
+							agentDefns["Troll"].name,
 							new Coords(90, 20),
-							null, // itemsEquipped
-							null // itemsInInventory
+							[ new Item(itemDefns["Club"].name) ], // itemsEquipped
+							[ new Item(itemDefns["Coin"].name, 5) ] // itemsInInventory
 						),
 						new Agent
 						(
 							null, // name
-							agentDefns["Ogre"].name,
+							agentDefns["Goblin"].name,
 							new Coords(30, 50),
-							null, // itemsEquipped
-							null // itemsInInventory
+							[ new Item(itemDefns["Dagger"].name) ], // itemsEquipped
+							[ new Item(itemDefns["Coin"].name, 1) ] // itemsInInventory
 						),
 						new Agent
 						(
 							null, // name
-							agentDefns["Ogre"].name,
+							agentDefns["Goblin"].name,
 							new Coords(90, 80),
-							null, // itemsEquipped
-							null // itemsInInventory
+							[ new Item(itemDefns["Dagger"].name) ], // itemsEquipped
+							[ new Item(itemDefns["Coin"].name, 1) ] // itemsInInventory
 						),
 						new Agent
 						(
 							null, // name
-							agentDefns["Ogre"].name,
+							agentDefns["Goblin"].name,
 							new Coords(150, 50),
-							null, // itemsEquipped
-							null // itemsInInventory
+							[ new Item(itemDefns["Dagger"].name) ], // itemsEquipped
+							[ new Item(itemDefns["Coin"].name, 1) ]
 						),
 					]
 				),
-			]	
+			]
 		);
 
 		return encounter;

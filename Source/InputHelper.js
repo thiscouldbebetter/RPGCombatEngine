@@ -1,6 +1,9 @@
 
 function InputHelper()
-{}
+{
+	this.keyPressed = null;
+	this.hasKeyPressedBeenProcessed = false;
+}
 {
 	InputHelper.prototype.initialize = function()
 	{
@@ -8,20 +11,22 @@ function InputHelper()
 		document.body.onkeyup = this.handleEventKeyUp.bind(this);
 	}
 
-	InputHelper.prototype.updateForTimerTick = function()
-	{
-		this.keyPressed = null;
-	}
-
 	// events
 
-	InputHelper.prototype.handleEventKeyDown = function(e)
+	InputHelper.prototype.handleEventKeyDown = function(event)
 	{
-		this.keyPressed = e.key;
+		var key = event.key;
+		this.keyPressed = key;
+		if (this.keyPressed != key)
+		{
+			this.keyPressed = key;
+			this.hasKeyPressedBeenProcessed = false;
+		}
 	}
 
 	InputHelper.prototype.handleEventKeyUp = function(e)
 	{
-		// todo 
+		this.keyPressed = null;
+		this.hasKeyPressedBeenProcessed = false;
 	}
 }

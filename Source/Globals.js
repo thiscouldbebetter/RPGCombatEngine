@@ -8,7 +8,6 @@ function Globals()
 	Globals.prototype.handleEventTimerTick = function()
 	{
 		this.universe.updateForTimerTick();
-		this.inputHelper.updateForTimerTick();
 	}
 
 	Globals.prototype.initialize = function

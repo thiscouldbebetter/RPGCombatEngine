@@ -109,36 +109,43 @@ function Menu
 		}
 
 		var inputHelper = Globals.Instance.inputHelper;
-		var keyPressed = inputHelper.keyPressed;
-
-		if (keyPressed == "ArrowLeft")
+		if (inputHelper.hasKeyPressedBeenProcessed == false)
 		{
-			// todo - back
-		}
-		else if (keyPressed == "Enter" || keyPressed == "ArrowRight") 
-		{
-			var encounter = Globals.Instance.universe.encounter;
-			var childSelected = this.childSelected();
+			var keyPressed = inputHelper.keyPressed;
 
-			this.isLocked = true;
-
-			if (childSelected.children == null)
+			if (keyPressed == "ArrowLeft")
 			{
-				childSelected.updateEncounter(encounter);
+				// todo - back
 			}
-			else
+			else if (keyPressed == "Enter" || keyPressed == "ArrowRight") 
 			{
+				inputHelper.hasKeyPressedBeenProcessed = true;
+				
+				var encounter = Globals.Instance.universe.encounter;
+				var childSelected = this.childSelected();
+
+				this.isLocked = true;
+
 				encounter.entitiesToRemove.push(this);
-				encounter.entitiesToSpawn.push(childSelected);
+				var hasNoChildren =
+					(childSelected.children == null || childSelected.children.length == 0);
+				if (hasNoChildren)
+				{
+					childSelected.updateEncounter(encounter);
+				}
+				else
+				{
+					encounter.entitiesToSpawn.push(childSelected);
+				}
 			}
-		}
-		else if (keyPressed == "ArrowDown")
-		{
-			this.indexOfChildSelectedAdd(1);
-		}
-		else if (keyPressed == "ArrowUp")
-		{
-			this.indexOfChildSelectedAdd(-1);
+			else if (keyPressed == "ArrowDown")
+			{
+				this.indexOfChildSelectedAdd(1);
+			}
+			else if (keyPressed == "ArrowUp")
+			{
+				this.indexOfChildSelectedAdd(-1);
+			}
 		}
 	}
 
@@ -169,20 +176,16 @@ function Menu
 					displayText,
 					drawPos
 				);
-		
+
 				drawPos.y += arrowSize.y / 3; // hack
-	
+
 				if (i == menu.indexOfChildSelected)
 				{
-					display.drawArrow
-					(
-						drawPos, // pos - hack
-						arrowSize // size
-					);
+					display.drawArrow(drawPos);
 				}
 
 				drawPos.y -= arrowSize.y / 3; // hack
-	
+
 				drawPos.add(spacing);
 
 			} // end for

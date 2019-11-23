@@ -34,60 +34,19 @@ function Action()
 
 	Action.prototype.updateEncounterAndAgentForTimerTick = function(encounter, agent)
 	{
-		var display = Globals.Instance.display;
+		var intelligence = encounter.partyCurrent().intelligence;
 
 		if (this.status == ActionStatus.Instances.None)
 		{
-			this.status = ActionStatus.Instances.AwaitingActionDefn;
-
-			var actionDefns = agent.defn().actionDefns;
-
-			var updateEncounter = function()
-			{
-				var encounter = Globals.Instance.universe.encounter;
-				var agent = encounter.agentCurrent;
-				var action = agent.action;
-				action.defnName = this.text; // hack
-				var actionDefn = action.defn(agent);
-				if (actionDefn.requiresTarget == true)
-				{
-					actionStatusNext = ActionStatus.Instances.AwaitingTarget;
-				}
-				else
-				{
-					actionStatusNext = ActionStatus.Instances.Complete;
-				}
-				action.status = actionStatusNext;
-			}
-
-			var panes = encounter.defn().panes;
-
-			var menuForActionDefns = new Menu
-			(
-				"Actions",
-				panes["Menu_Player"].pos, // pos
-				new Coords(0, 8), // spacing
-				null, // updateEncounter
-				null, // menuable
-				Menu.menuablesToMenus
-				(
-					actionDefns,
-					[ "name" ], // bindingPathsForMenuText
-					updateEncounter
-				),
-				0 // indexOfChildSelected
-			);
-
-			encounter.entitiesToSpawn.push(menuForActionDefns);
+			intelligence.actionInitialize(this, encounter, agent);
 		}
 		else if (this.status == ActionStatus.Instances.AwaitingActionDefn)
 		{
-			// do nothing	
+			intelligence.decideActionDefn(this, encounter, agent);
 		}
 		else if (this.status == ActionStatus.Instances.AwaitingTarget)
 		{
-			var intelligence = encounter.partyCurrent().intelligence;
-			intelligence.decideAction(this);
+			intelligence.decideActionTarget(this, encounter, agent);
 		}
 		else if (this.status == ActionStatus.Instances.Running)
 		{
@@ -96,10 +55,14 @@ function Action()
 		}
 		else if (this.status == ActionStatus.Instances.Complete)
 		{
-			encounter.entitiesToRemove.push(agent.action);
+			//encounter.entitiesToRemove.push(agent.action);
 			agent.action = null;
 			agent.hasMovedThisTurn = true;
 			encounter.agentCurrentAdvance();
+		}
+		else
+		{
+			throw "Invalid action status: " + this.status.name;
 		}
 	}
 }

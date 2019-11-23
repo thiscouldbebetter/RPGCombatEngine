@@ -4,8 +4,8 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 	this.name = name;
 	this.defnName = defnName;
 	this.pos = pos;
-	this.itemsEquipped = itemsEquipped;
-	this.itemsInInventory = itemsInInventory;
+	this.itemsEquipped = (itemsEquipped == null ? [] : itemsEquipped);
+	this.itemsInInventory = (itemsInInventory == null ? [] : itemsInInventory);
 
 	this.action = null;
 	this.effects = [];
@@ -48,9 +48,9 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 		{
 			if (this.action == null)
 			{
-				this.action = new Action();
+				this.action = new Action(ActionStatus.Instances.None);
 			}
-	
+
 			this.action.updateEncounterAndAgentForTimerTick
 			(
 				encounter,
@@ -118,13 +118,7 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 
 		if (agent == agentCurrent)
 		{
-			var arrowSizeInPixels = agentDefn.sizeInPixels;
-
-			display.drawArrow
-			(
-				agent.pos,
-				arrowSizeInPixels
-			);
+			display.drawArrow(agent.pos);
 
 			var action = agent.action;
 			if (action != null)
@@ -133,11 +127,7 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 
 				if (actionTarget != null)
 				{
-					display.drawArrow
-					(
-						actionTarget.pos,
-						arrowSizeInPixels
-					);
+					display.drawArrow(actionTarget.pos);
 				}
 			}
 		}

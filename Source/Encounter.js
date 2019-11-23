@@ -17,26 +17,30 @@ function Encounter(defnName, parties)
 	Encounter.prototype.agentCurrentAdvance = function()
 	{
 		var agentNext = null;
-		
-		for (var i = 0; i < this.agentsAll.length; i++)
+
+		var hasAnyAgentNotMovedThisTurn = true;
+
+		var agentsActive = this.agentsAll.filter(x => x.integrity > 0);
+
+		for (var i = 0; i < agentsActive.length; i++)
 		{
-			var agent = this.agentsAll[i];
+			var agent = agentsActive[i];
 			if (agent.hasMovedThisTurn == false)
 			{
 				agentNext = agent;
-				haveAllAgentsMovedThisTurn = false;
+				hasAnyAgentNotMovedThisTurn = false;
 				break;
 			}
 		}
 
-		if (haveAllAgentsMovedThisTurn == true)
+		if (hasAnyAgentNotMovedThisTurn == true)
 		{
-			for (var i = 0; i < this.agentsAll.length; i++)
+			for (var i = 0; i < agentsActive.length; i++)
 			{
-				var agent = this.agentsAll[i];
+				var agent = agentsActive[i];
 				agent.hasMovedThisTurn = false;
 			}
-			agentNext = this.agentsAll[0];
+			agentNext = agentsActive[0];
 		}
 
 		this.agentCurrent = agentNext;
@@ -46,9 +50,26 @@ function Encounter(defnName, parties)
 	{
 		return Globals.Instance.universe.encounterDefns[this.defnName];
 	}
+	
+	Encounter.prototype.entitiesSpawn = function()
+	{
+		for (var i = 0; i < this.entitiesToSpawn.length; i++)
+		{
+			var entity = this.entitiesToSpawn[i];
+			if (entity.initializeForEncounter != null)
+			{
+				entity.initializeForEncounter(this);
+			}
+			this.entities.push(entity);
+		}
+
+		this.entitiesToSpawn.length = 0;
+	}
 
 	Encounter.prototype.initialize = function()
 	{
+		this.entitiesSpawn();
+
 		this.agentsAll = [];
 
 		for (var p = 0; p < this.parties.length; p++)
@@ -69,17 +90,7 @@ function Encounter(defnName, parties)
 
 	Encounter.prototype.updateForTimerTick = function()
 	{
-		for (var i = 0; i < this.entitiesToSpawn.length; i++)
-		{
-			var entity = this.entitiesToSpawn[i];
-			if (entity.initializeForEncounter != null)
-			{
-				entity.initializeForEncounter(this);
-			}
-			this.entities.push(entity);
-		}
-
-		this.entitiesToSpawn.length = 0;
+		this.entitiesSpawn();
 
 		for (var i = 0; i < this.entities.length; i++)
 		{
@@ -90,11 +101,11 @@ function Encounter(defnName, parties)
 		for (var i = 0; i < this.entitiesToRemove.length; i++)
 		{
 			var entity = this.entitiesToRemove[i];
-			this.entities.splice
-			(
-				this.entities.indexOf(entity),
-				1
-			);
+			var indexToRemoveAt = this.entities.indexOf(entity);
+			if (indexToRemoveAt >= 0) // hack
+			{
+				this.entities.splice(indexToRemoveAt, 1);
+			}
 		}
 
 		this.entitiesToRemove.length = 0;
@@ -109,23 +120,13 @@ function Encounter(defnName, parties)
 		for (var p = 0; p < this.parties.length; p++)
 		{
 			var party = this.parties[p];
-			var partyAgents = party.agents;
+			var partyAgentsActive = party.agentsActive();
 
-			var areAnyAgentsInPartyAlive = false;
-
-			for (var a = 0; a < partyAgents.length; a++)
-			{
-				var agent = partyAgents[a];
-
-				if (agent.integrity > 0)
-				{
-					areAnyAgentsInPartyAlive = true;
-					break;
-				}
-			}
+			var areAnyAgentsInPartyAlive = partyAgentsActive.length > 0;
 
 			if (areAnyAgentsInPartyAlive == false)
 			{
+				clearInterval(Globals.Instance.timer);
 				if (p == 0)
 				{
 					document.write("You lose!");

@@ -2,8 +2,34 @@
 function IntelligenceMachine()
 {}
 {
-	IntelligenceMachine.prototype.decideAction = function()
+	IntelligenceMachine.prototype.actionInitialize = function(action, encounter, agent)
 	{
-		// todo
+		action.status = ActionStatus.Instances.AwaitingActionDefn;
+	}
+
+	IntelligenceMachine.prototype.decideActionDefn = function(action, encounter, agent)
+	{
+		var actionDefnsAvailable = agent.defn().actionDefns;
+		var actionDefnIndex = Math.floor(Math.random(), actionDefnsAvailable.length);
+		var actionDefnChosen = actionDefnsAvailable[actionDefnIndex];
+		action.defnName = actionDefnChosen.name;
+
+		action.status = ActionStatus.Instances.AwaitingTarget;
+	}
+
+	IntelligenceMachine.prototype.decideActionTarget = function(action, encounter, agent)
+	{
+		var target = action.target();
+		if (target == null)
+		{
+			var partyToTarget = encounter.parties[0];
+			var agentsToTarget = partyToTarget.agentsActive();
+			var agentToTargetIndex = Math.floor(Math.random() * agentsToTarget.length);
+			target = agentsToTarget[agentToTargetIndex];
+			action.target_Set(target);
+			action.parameters["EmptyForPosToReturnTo"] = new Empty(agent.pos.clone());
+		}
+
+		action.status = ActionStatus.Instances.Running;
 	}
 }

@@ -17,8 +17,10 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 		);
 	}
 
-	Display.prototype.drawArrow = function(pos, size)
+	Display.prototype.drawArrow = function(pos)
 	{
+		var size = new Coords(1, 1).multiplyScalar(8);
+
 		this.graphics.strokeStyle = this.colorFore;
 		this.graphics.beginPath();
 		this.graphics.moveTo(pos.x, pos.y + size.y / 2);

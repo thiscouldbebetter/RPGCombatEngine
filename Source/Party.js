@@ -36,6 +36,11 @@ function Party(name, intelligence, agents)
 		}
 	}
 
+	Party.prototype.agentsActive = function()
+	{
+		return this.agents.filter(x => x.integrity > 0);
+	}
+
 	Party.prototype.initializeForEncounter = function(encounter)
 	{
 		for (var i = 0; i < this.agents.length; i++)

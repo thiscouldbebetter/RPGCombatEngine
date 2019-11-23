@@ -1,7 +1,8 @@
 
-function Item(defnName)
+function Item(defnName, quantity)
 {
 	this.defnName = defnName;
+	this.quantity = (quantity == null ? 1 : quantity);
 }
 
 {
