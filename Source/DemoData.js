@@ -24,7 +24,7 @@ function DemoData()
 			new Category("Consumable"),
 			new Category("Valuable"),
 			new Category("Weapon"),
-		].addLookups("name");
+		].addLookupsByName();
 
 		var itemDefns = this.universe_1_ItemDefns(categories);
 
@@ -46,7 +46,7 @@ function DemoData()
 					new Pane("Menu_Player", new Coords(225, 150), new Coords(75, 75)),
 				]
 			),
-		].addLookups("name");
+		].addLookupsByName();
 
 		var encounter = this.universe_4_Encounter(encounterDefns, agentDefns, itemDefns);
 
@@ -101,10 +101,13 @@ function DemoData()
 					(
 						items.indexOf(item), 1
 					);
-					target.energy = NumberHelper.trimValueToMinAndMax
+					target.energy = 
 					(
-						target.energy + 20, 0, target.defn().energyMax
-					)
+						target.energy + 20
+					).trimToRangeMax
+					(
+						target.defn().energyMax
+					);
 				}
 			),
 
@@ -164,7 +167,7 @@ function DemoData()
 			),
 		];
 
-		itemDefns.addLookups("name");
+		itemDefns.addLookupsByName();
 
 		return itemDefns;
 
@@ -471,7 +474,7 @@ function DemoData()
 			),
 		];
 
-		actionDefnsCommon.addLookups("name");
+		actionDefnsCommon.addLookupsByName();
 
 		return actionDefnsCommon;
 	}
@@ -482,9 +485,9 @@ function DemoData()
 
 		var visualAgentLabel = new VisualDynamic
 		(
-			function drawToDisplayForDrawable(display, drawable)
+			function draw(universe, world, display, entity)
 			{
-				var agent = drawable;
+				var agent = entity;
 				var agentDefn = agent.defn();
 				var agentText = "\n";
 				if (agent.name != null)
@@ -492,9 +495,12 @@ function DemoData()
 					agentText += agent.name + "\n";
 				}
 				agentText += agentDefn.name;
+				var pos = agent.pos;
 				display.drawText
 				(
-					agentText, agent.pos,
+					agentText,
+					display.fontHeightInPixels,
+					pos,
 					display.colorFore, display.colorBack
 				);
 			}
@@ -600,17 +606,21 @@ function DemoData()
 						// apply
 						function(agent, target)
 						{
-							agent.energy = NumberHelper.trimValueToMinAndMax
+							agent.energy =
 							(
-								agent.energy + 5, 0, agent.defn().energyMax
+								agent.energy + 5
+							).trimToRangeMax
+							(
+								agent.defn().energyMax
 							);
 
 							var integrityToHeal = 20;
-							target.integrity = NumberHelper.trimValueToMinAndMax
+							target.integrity = 
 							(
-								target.integrity + integrityToHeal,
-								0, // min
-								target.defn().integrityMax // max
+								target.integrity + integrityToHeal
+							).trimToRangeMax
+							(
+								target.defn().integrityMax
 							);
 						}
 					),
@@ -752,7 +762,7 @@ function DemoData()
 			),
 		];
 
-		agentDefns.addLookups("name");
+		agentDefns.addLookupsByName();
 
 		return agentDefns;
 	}

@@ -1,29 +1,26 @@
 
 function VisualFallthrough(children)
 {
-	this.children = children;	
+	this.children = children;
 }
 
 {
-	VisualFallthrough.prototype.drawToDisplayForDrawable = function
-	(
-		display, drawable
-	)
+	VisualFallthrough.prototype.draw = function(universe, world, display, entity)
 	{
 		for (var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
 			try
 			{
-				child.drawToDisplayForDrawable(display, drawable);
+				child.draw(universe, world, display, entity);
 				break;
 			}
 			catch (err)
 			{
-				// do nothing
-				var todo = 1;
+				// Do nothing.
+				throw err;
 			}
 		}
-	}
+	};
 
 }

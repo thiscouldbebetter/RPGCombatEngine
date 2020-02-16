@@ -17,6 +17,9 @@ function Menu
 	this.updateEncounter = updateEncounter;
 	this.children = children;
 	this.indexOfChildSelected = indexOfChildSelected;
+
+	this._entityForArrow = { "pos": new Coords() };
+	this._visualArrow = new VisualArrow();
 }
 
 {
@@ -151,7 +154,7 @@ function Menu
 
 	// drawable
 
-	Menu.prototype.drawToDisplay = function(display)
+	Menu.prototype.draw = function(universe, world, display)
 	{
 		var menu = this;
 		var pos = menu.pos;
@@ -174,22 +177,20 @@ function Menu
 				display.drawText
 				(
 					displayText,
+					display.fontHeightInPixels,
 					drawPos
 				);
 
-				drawPos.y += arrowSize.y / 3; // hack
-
 				if (i == menu.indexOfChildSelected)
 				{
-					display.drawArrow(drawPos);
+					this._entityForArrow.pos.overwriteWith(drawPos); // hack
+					this._visualArrow.draw(universe, world, display, this._entityForArrow);
 				}
-
-				drawPos.y -= arrowSize.y / 3; // hack
 
 				drawPos.add(spacing);
 
 			} // end for
 		}
-	}
+	};
 
 }

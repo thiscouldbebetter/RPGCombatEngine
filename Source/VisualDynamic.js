@@ -1,15 +1,15 @@
 
-function VisualDynamic(drawToDisplayForDrawable)
+function VisualDynamic(draw)
 {
-	this.drawToDisplayForDrawable = drawToDisplayForDrawable;
+	this._draw = draw;
 }
 
 {
-	VisualDynamic.prototype.drawToDisplayForDrawable = function
+	VisualDynamic.prototype.draw = function
 	(
-		display, drawable
+		universe, world, display, entity
 	)
 	{
-		this.drawToDisplayForDrawable.call(this, display, drawable);
+		this._draw.call(this, universe, world, display, entity);
 	}
 }

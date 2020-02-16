@@ -88,7 +88,7 @@ function Encounter(defnName, parties)
 		return (this.agentCurrent.party);
 	}
 
-	Encounter.prototype.updateForTimerTick = function()
+	Encounter.prototype.updateForTimerTick = function(universe, world)
 	{
 		this.entitiesSpawn();
 
@@ -112,8 +112,8 @@ function Encounter(defnName, parties)
 
 		this.updateForTimerTick_WinOrLose();
 
-		this.drawToDisplay(Globals.Instance.display);
-	}
+		this.draw(universe, world, Globals.Instance.display);
+	};
 
 	Encounter.prototype.updateForTimerTick_WinOrLose = function()
 	{
@@ -141,7 +141,7 @@ function Encounter(defnName, parties)
 
 	// drawable
 
-	Encounter.prototype.drawToDisplay = function(display)
+	Encounter.prototype.draw = function(universe, world, display)
 	{
 		var encounter = this;
 		display.clear();
@@ -152,7 +152,7 @@ function Encounter(defnName, parties)
 		for (var p = 0; p < panes.length; p++)
 		{
 			var pane = panes[p];
-			pane.drawToDisplay(display);
+			pane.draw(universe, world, display);
 		}
 
 		var entities = encounter.entities;
@@ -160,9 +160,9 @@ function Encounter(defnName, parties)
 		{
 			var entity = entities[i];
 
-			if (entity.drawToDisplay != null)
+			if (entity.draw != null)
 			{
-				entity.drawToDisplay(display);
+				entity.draw(universe, world, display);
 			}
 		}
 	}

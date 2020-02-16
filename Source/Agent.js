@@ -11,6 +11,8 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 	this.effects = [];
 
 	this.hasMovedThisTurn = false;
+
+	this._visualArrow = new VisualArrow();
 }
 
 {
@@ -107,27 +109,26 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 
 	// drawable
 
-	Agent.prototype.drawToDisplay = function(display)
+	Agent.prototype.draw = function(universe, world, display)
 	{
-		var agent = this;
-		var agentDefn = agent.defn();
-		agentDefn.visual.drawToDisplayForDrawable(display, this);
+		var agentDefn = this.defn();
+		agentDefn.visual.draw(universe, world, display, this);
 
-		var encounter = Globals.Instance.universe.encounter;
+		var encounter = universe.encounter;
 		var agentCurrent = encounter.agentCurrent;
 
-		if (agent == agentCurrent)
+		if (this == agentCurrent)
 		{
-			display.drawArrow(agent.pos);
+			this._visualArrow.draw(universe, world, display, this);
 
-			var action = agent.action;
+			var action = this.action;
 			if (action != null)
 			{
 				var actionTarget = action.target();
 
 				if (actionTarget != null)
 				{
-					display.drawArrow(actionTarget.pos);
+					this._visualArrow.draw(universe, world, display, actionTarget);
 				}
 			}
 		}

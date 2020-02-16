@@ -1,5 +1,4 @@
 
-
 function VisualRectangle(size, colorFill, colorBorder)
 {
 	this.size = size;
@@ -8,14 +7,15 @@ function VisualRectangle(size, colorFill, colorBorder)
 }
 
 {
-	VisualRectangle.prototype.drawToDisplayForDrawable = function
+	VisualRectangle.prototype.draw = function
 	(
-		display, drawable
+		universe, world, display, entity
 	)
 	{
+		var pos = entity.pos;
 		display.drawRectangle
 		(
-			drawable.pos, this.size, 
+			pos, this.size, 
 			this.colorFill, this.colorBorder
 		);
 	}

@@ -57,9 +57,9 @@ function Party(name, intelligence, agents)
 
 	// drawable
 
-	Party.prototype.drawToDisplay = function(display)
+	Party.prototype.draw = function(universe, world, display)
 	{
-		var panes = Globals.Instance.universe.encounter.defn().panes;
+		var panes = universe.encounter.defn().panes;
 
 		var paneForStatus = panes["Status_" + this.name];
 
@@ -78,6 +78,6 @@ function Party(name, intelligence, agents)
 			)
 		)
 
-		menuForParty.drawToDisplay(display);
+		menuForParty.draw(universe, world, display);
 	}
 }

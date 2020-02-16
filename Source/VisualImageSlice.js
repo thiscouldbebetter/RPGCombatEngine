@@ -4,19 +4,22 @@ function VisualImageSlice(imageName, offset, size)
 	this.imageName = imageName;
 	this.offset = offset;
 	this.size = size;
+
+	this._sliceBox = new Box().fromMinAndSize(offset, size);
 }
 
 {
-	VisualImageSlice.prototype.drawToDisplayForDrawable = function
+	VisualImageSlice.prototype.draw = function
 	(
-		display, drawable
+		universe, world, display, entity
 	)
 	{
-		var imageLibrary = Globals.Instance.universe.imageLibrary;
+		var imageLibrary = universe.imageLibrary;
 		var image = imageLibrary.images[this.imageName];
-		display.drawImageSlice
+		var pos = entity.pos;
+		display.drawImagePartial
 		(
-			image.systemImage, this.offset, this.size, drawable.pos
+			image, pos, this._sliceBox
 		);
 	}
 }

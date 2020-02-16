@@ -12,7 +12,7 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 	{
 		this.drawRectangle
 		(
-			Coords.Instances.Zeroes, this.sizeInPixels,
+			Coords.Instances().Zeroes, this.sizeInPixels,
 			this.colorBack, this.colorFore
 		);
 	}

@@ -20,10 +20,10 @@ function AgentDefn
 	this.actionDefns = actionDefns;
 	this.spellDefns = spellDefns;
 	
-	this.actionDefns.addLookups("name");
+	this.actionDefns.addLookupsByName();
 
 	if (this.spellDefns != null)
 	{
-		this.spellDefns.addLookups("name");
+		this.spellDefns.addLookupsByName();
 	}
 }

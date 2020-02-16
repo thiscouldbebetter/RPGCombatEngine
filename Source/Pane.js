@@ -9,7 +9,7 @@ function Pane(name, pos, size)
 {
 	// drawable
 
-	Pane.prototype.drawToDisplay = function(display)
+	Pane.prototype.draw = function(universe, world, display)
 	{
 		display.drawRectangle
 		(

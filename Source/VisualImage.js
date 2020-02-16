@@ -5,13 +5,14 @@ function VisualImage(imageName)
 }
 
 {
-	VisualImage.prototype.drawToDisplayForDrawable = function
+	VisualImage.prototype.draw = function
 	(
-		display, drawable
+		universe, world, display, entity
 	)
 	{
-		var imageLibrary = Globals.Instance.universe.imageLibrary;
+		var imageLibrary = universe.imageLibrary;
 		var image = imageLibrary.images[this.imageName];
-		display.drawImage(image.systemImage, drawable.pos);
-	}
+		var pos = entity.pos;
+		display.drawImage(image, pos);
+	};
 }
