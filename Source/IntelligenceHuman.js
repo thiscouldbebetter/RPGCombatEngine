@@ -1,27 +1,25 @@
 
-function IntelligenceHuman()
-{}
+class IntelligenceHuman
 {
-	IntelligenceHuman.prototype.actionInitialize = function(action, encounter, agent)
+	actionInitialize(action, encounter, agent)
 	{
-		action.status = ActionStatus.Instances.AwaitingActionDefn;
+		var actionStatuses = ActionStatus.Instances();
+		action.status = actionStatuses.AwaitingActionDefn;
 
 		var actionDefns = agent.defn().actionDefns;
 
-		var updateEncounter = function()
+		var updateEncounter = (encounter, agent) =>
 		{
-			var encounter = Globals.Instance.universe.encounter;
-			var agent = encounter.agentCurrent;
 			var agentAction = agent.action;
-			agentAction.defnName = this.text; // hack
 			var actionDefn = agentAction.defn(agent);
+			var actionStatusNext;
 			if (actionDefn.requiresTarget == true)
 			{
-				actionStatusNext = ActionStatus.Instances.AwaitingTarget;
+				actionStatusNext = actionStatuses.AwaitingTarget;
 			}
 			else
 			{
-				actionStatusNext = ActionStatus.Instances.Complete;
+				actionStatusNext = actionStatuses.Complete;
 			}
 			action.status = actionStatusNext;
 		}
@@ -33,8 +31,8 @@ function IntelligenceHuman()
 			"Actions",
 			panes["Menu_Player"].pos, // pos
 			new Coords(0, 8), // spacing
-			null, // updateEncounter
 			null, // menuable
+			null, // updateEncounter
 			Menu.menuablesToMenus
 			(
 				actionDefns,
@@ -47,12 +45,12 @@ function IntelligenceHuman()
 		encounter.entitiesToSpawn.push(menuForActionDefns);	
 	}
 
-	IntelligenceHuman.prototype.decideActionDefn = function(action)
+	decideActionDefn(action)
 	{
 		// Do nothing.
 	}
 
-	IntelligenceHuman.prototype.decideActionTarget = function(action, encounter, agent)
+	decideActionTarget(action, encounter, agent)
 	{
 		var target = action.target();
 		if (target == null)
@@ -65,10 +63,11 @@ function IntelligenceHuman()
 
 		var inputHelper = Globals.Instance.inputHelper;
 		var keyPressed = inputHelper.keyPressed;
-	
+		var actionStatuses = ActionStatus.Instances();
+
 		if (keyPressed == "Enter")
 		{
-			action.status = ActionStatus.Instances.Running;
+			action.status = actionStatuses.Running;
 		}
 		else
 		{
@@ -77,7 +76,7 @@ function IntelligenceHuman()
 
 			if (keyPressed == "ArrowLeft")
 			{
-				partyToTarget = encounter.parties[1];
+				var partyToTarget = encounter.parties[1];
 				if (partyToTarget != partyTargeted)
 				{
 					target = partyToTarget.agents[0];
@@ -85,7 +84,7 @@ function IntelligenceHuman()
 			}
 			else if (keyPressed == "ArrowRight")
 			{
-				partyToTarget = encounter.parties[0];
+				var partyToTarget = encounter.parties[0];
 				if (partyToTarget != partyTargeted)
 				{
 					target = partyToTarget.agents[0];

@@ -1,11 +1,12 @@
 
-function VisualArrow()
+class VisualArrow
 {
-	// Do nothing.
-	this._size = new Coords(1, 1).multiplyScalar(8); // hack
-}
-{
-	VisualArrow.prototype.draw = function(universe, world, display, entity)
+	constructor()
+	{
+		this._size = new Coords(1, 1).multiplyScalar(8); // hack
+	}
+
+	draw(universe, world, display, entity)
 	{
 		var pos = entity.pos;
 		var size = this._size;

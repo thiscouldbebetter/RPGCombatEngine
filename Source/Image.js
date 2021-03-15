@@ -1,9 +1,12 @@
 
-function Image(name, sourcePath)
+class Image
 {
-	this.name = name;
-	this.sourcePath = sourcePath;
+	constructor(name, sourcePath)
+	{
+		this.name = name;
+		this.sourcePath = sourcePath;
 
-	this.systemImage = document.createElement("img");
-	this.systemImage.src = this.sourcePath;
+		this.systemImage = document.createElement("img");
+		this.systemImage.src = this.sourcePath;
+	}
 }

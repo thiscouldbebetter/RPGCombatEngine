@@ -1,16 +1,14 @@
 
-function VisualRectangle(size, colorFill, colorBorder)
+class VisualRectangle
 {
-	this.size = size;
-	this.colorFill = colorFill;
-	this.colorBorder = colorBorder;
-}
+	constructor(size, colorFill, colorBorder)
+	{
+		this.size = size;
+		this.colorFill = colorFill;
+		this.colorBorder = colorBorder;
+	}
 
-{
-	VisualRectangle.prototype.draw = function
-	(
-		universe, world, display, entity
-	)
+	draw(universe, world, display, entity)
 	{
 		var pos = entity.pos;
 		display.drawRectangle

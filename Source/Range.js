@@ -1,13 +1,14 @@
 
-function Range(min, max)
+class Range
 {
-	this.min = min;
-	this.max = max;
-	this.size = this.max - this.min;
-}
+	constructor(min, max)
+	{
+		this.min = min;
+		this.max = max;
+		this.size = this.max - this.min;
+	}
 
-{
-	Range.prototype.randomNumberInRange = function()
+	randomNumberInRange()
 	{
 		return
 			this.min 

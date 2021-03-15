@@ -1,8 +1,11 @@
 
-function EncounterDefn(name, panes)
+class EncounterDefn
 {
-	this.name = name;
-	this.panes = panes;
+	constructor(name, panes)
+	{
+		this.name = name;
+		this.panes = panes;
 
-	this.panes.addLookupsByName();
+		this.panes.addLookupsByName();
+	}
 }

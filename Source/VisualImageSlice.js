@@ -1,18 +1,16 @@
 
-function VisualImageSlice(imageName, offset, size)
+class VisualImageSlice
 {
-	this.imageName = imageName;
-	this.offset = offset;
-	this.size = size;
+	constructor(imageName, offset, size)
+	{
+		this.imageName = imageName;
+		this.offset = offset;
+		this.size = size;
 
-	this._sliceBox = new Box().fromMinAndSize(offset, size);
-}
+		this._sliceBox = Box.fromMinAndSize(offset, size);
+	}
 
-{
-	VisualImageSlice.prototype.draw = function
-	(
-		universe, world, display, entity
-	)
+	draw(universe, world, display, entity)
 	{
 		var imageLibrary = universe.imageLibrary;
 		var image = imageLibrary.images[this.imageName];

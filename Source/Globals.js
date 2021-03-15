@@ -1,21 +1,14 @@
 
-
-function Globals()
-{}
+class Globals
 {
-	Globals.Instance = new Globals();
+	static Instance = new Globals();
 
-	Globals.prototype.handleEventTimerTick = function()
+	handleEventTimerTick()
 	{
 		this.universe.updateForTimerTick();
 	}
 
-	Globals.prototype.initialize = function
-	(
-		millisecondsPerTimerTick,
-		display,
-		universe
-	)
+	initialize(millisecondsPerTimerTick, display, universe)
 	{
 		this.display = display;
 		this.display.initialize();

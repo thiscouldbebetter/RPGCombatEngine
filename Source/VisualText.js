@@ -1,12 +1,13 @@
 
-function VisualText(text, colorFill)
+class VisualText
 {
-	this.text = text;
-	this.colorFill = colorFill;
-}
+	constructor(text, colorFill)
+	{
+		this.text = text;
+		this.colorFill = colorFill;
+	}
 
-{
-	VisualText.prototype.draw = function(universe, world, display, entity)
+	draw(universe, world, display, entity)
 	{
 		var pos = entity.pos;
 		display.drawText

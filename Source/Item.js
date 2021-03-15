@@ -1,17 +1,18 @@
 
-function Item(defnName, quantity)
+class Item
 {
-	this.defnName = defnName;
-	this.quantity = (quantity == null ? 1 : quantity);
-}
+	constructor(defnName, quantity)
+	{
+		this.defnName = defnName;
+		this.quantity = (quantity == null ? 1 : quantity);
+	}
 
-{
-	Item.prototype.apply = function(agent, target)
+	apply(agent, target)
 	{
 		this.defn().apply(this, agent, target);
 	}
 
-	Item.prototype.defn = function()
+	defn()
 	{
 		return Globals.Instance.universe.itemDefns[this.defnName];
 	}

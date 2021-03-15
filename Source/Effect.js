@@ -1,12 +1,13 @@
 
-function Effect(defnName)
+class Effect
 {
-	this.defnName = defnName;
-	this.turnApplied = turnApplied;
-}
+	constructor(defnName)
+	{
+		this.defnName = defnName;
+		this.turnApplied = turnApplied;
+	}
 
-{
-	Effect.prototype.defn = function()
+	defn()
 	{
 		return Globals.Instance.universe.effectDefns[this.defnName];
 	}

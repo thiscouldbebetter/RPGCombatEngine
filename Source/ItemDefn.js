@@ -1,7 +1,10 @@
 
-function ItemDefn(name, categoryNames, apply)
+class ItemDefn
 {
-	this.name = name;
-	this.categoryNames = categoryNames;
-	this.apply = apply;
+	constructor(name, categoryNames, apply)
+	{
+		this.name = name;
+		this.categoryNames = categoryNames;
+		this.apply = apply;
+	}
 }

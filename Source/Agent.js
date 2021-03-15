@@ -1,27 +1,28 @@
 
-function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
+class Agent
 {
-	this.name = name;
-	this.defnName = defnName;
-	this.pos = pos;
-	this.itemsEquipped = (itemsEquipped == null ? [] : itemsEquipped);
-	this.itemsInInventory = (itemsInInventory == null ? [] : itemsInInventory);
+	constructor(name, defnName, pos, itemsEquipped, itemsInInventory)
+	{
+		this.name = name;
+		this.defnName = defnName;
+		this.pos = pos;
+		this.itemsEquipped = (itemsEquipped == null ? [] : itemsEquipped);
+		this.itemsInInventory = (itemsInInventory == null ? [] : itemsInInventory);
 
-	this.action = null;
-	this.effects = [];
+		this.action = null;
+		this.effects = [];
 
-	this.hasMovedThisTurn = false;
+		this.hasMovedThisTurn = false;
 
-	this._visualArrow = new VisualArrow();
-}
+		this._visualArrow = new VisualArrow();
+	}
 
-{
-	Agent.prototype.defn = function()
+	defn()
 	{
 		return Globals.Instance.universe.agentDefns[this.defnName];
 	}
 
-	Agent.prototype.initializeForEncounter = function(encounter)
+	initializeForEncounter(encounter)
 	{
 		var defn = this.defn();
 		this.integrity = defn.integrityMax;
@@ -44,13 +45,13 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 		}
 	}
 
-	Agent.prototype.updateEncounterForTimerTick = function(encounter)
+	updateEncounterForTimerTick(encounter)
 	{
 		if (encounter.agentCurrent == this)
 		{
 			if (this.action == null)
 			{
-				this.action = new Action(ActionStatus.Instances.None);
+				this.action = new Action(ActionStatus.Instances().None);
 			}
 
 			this.action.updateEncounterAndAgentForTimerTick
@@ -63,7 +64,7 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 
 	// menuable
 
-	Agent.prototype.toMenu = function()
+	toMenu()
 	{
 		var universe = Globals.Instance.universe;
 		var encounter = universe.encounter;
@@ -109,7 +110,7 @@ function Agent(name, defnName, pos, itemsEquipped, itemsInInventory)
 
 	// drawable
 
-	Agent.prototype.draw = function(universe, world, display)
+	draw(universe, world, display)
 	{
 		var agentDefn = this.defn();
 		agentDefn.visual.draw(universe, world, display, this);

@@ -1,14 +1,12 @@
 
-function VisualGroup(children)
+class VisualGroup
 {
-	this.children = children;
-}
+	constructor(children)
+	{
+		this.children = children;
+	}
 
-{
-	VisualGroup.prototype.draw = function
-	(
-		universe, world, display, entity
-	)
+	draw(universe, world, display, entity)
 	{
 		for (var i = 0; i < this.children.length; i++)
 		{

@@ -1,29 +1,25 @@
 
-function Menu
-(
-	text, 
-	pos, 
-	spacing, 
-	menuable,
-	updateEncounter, 
-	children, 
-	indexOfChildSelected
-)
+class Menu
 {
-	this.text = text;
-	this.pos = pos;
-	this.spacing = spacing;
-	this.menuable = menuable;
-	this.updateEncounter = updateEncounter;
-	this.children = children;
-	this.indexOfChildSelected = indexOfChildSelected;
+	constructor
+	(
+		text, pos, spacing, menuable, updateEncounter, children, 
+		indexOfChildSelected
+	)
+	{
+		this.text = text;
+		this.pos = pos;
+		this.spacing = spacing;
+		this.menuable = menuable;
+		this.updateEncounter = updateEncounter;
+		this.children = children;
+		this.indexOfChildSelected = indexOfChildSelected;
 
-	this._entityForArrow = { "pos": new Coords() };
-	this._visualArrow = new VisualArrow();
-}
+		this._entityForArrow = { "pos": new Coords() };
+		this._visualArrow = new VisualArrow();
+	}
 
-{
-	Menu.menuablesToMenus = function(menuables, bindingPathsForMenuText, updateEncounter)
+	static menuablesToMenus(menuables, bindingPathsForMenuText, updateEncounter)
 	{
 		var returnValues = [];
 
@@ -44,12 +40,12 @@ function Menu
 				{
 					var bindingPathForMenuText = bindingPathsForMenuText[f];
 					var bindingPathElements = bindingPathForMenuText.split(".");
-	
+
 					var valueCurrent = menuable;
 					for (var g = 0; g < bindingPathElements.length; g++)
 					{
 						var bindingPathElement = bindingPathElements[g];
-	
+
 						if (bindingPathElement.indexOf("()") == -1)
 						{
 							valueCurrent = valueCurrent[bindingPathElement];
@@ -61,10 +57,10 @@ function Menu
 							valueCurrent = method.call(valueCurrent);
 						}
 					}
-	
+
 					menuText += valueCurrent;
 				}
-	
+
 				menuableAsMenu = new Menu
 				(
 					menuText,
@@ -75,8 +71,6 @@ function Menu
 					null // children
 				);
 			}
-			
-			
 
 			returnValues.push(menuableAsMenu);
 		}
@@ -86,12 +80,12 @@ function Menu
 
 	// instance methods
 
-	Menu.prototype.childSelected = function()
+	childSelected()
 	{
 		return (this.indexOfChildSelected == null ? null : this.children[this.indexOfChildSelected]);
 	}
 
-	Menu.prototype.indexOfChildSelectedAdd = function(valueToAdd)
+	indexOfChildSelectedAdd(valueToAdd)
 	{
 		this.indexOfChildSelected += valueToAdd;
 		if (this.indexOfChildSelected < 0)
@@ -104,7 +98,7 @@ function Menu
 		}
 	}
 
-	Menu.prototype.updateEncounterForTimerTick = function(encounter)
+	updateEncounterForTimerTick(encounter)
 	{
 		if (this.isLocked == true)
 		{
@@ -123,8 +117,7 @@ function Menu
 			else if (keyPressed == "Enter" || keyPressed == "ArrowRight") 
 			{
 				inputHelper.hasKeyPressedBeenProcessed = true;
-				
-				var encounter = Globals.Instance.universe.encounter;
+
 				var childSelected = this.childSelected();
 
 				this.isLocked = true;
@@ -134,7 +127,10 @@ function Menu
 					(childSelected.children == null || childSelected.children.length == 0);
 				if (hasNoChildren)
 				{
-					childSelected.updateEncounter(encounter);
+					var agent = encounter.agentCurrent;
+					var agentAction = agent.action;
+					agentAction.defnName = childSelected.text;
+					childSelected.updateEncounter(encounter, agent);
 				}
 				else
 				{
@@ -154,7 +150,7 @@ function Menu
 
 	// drawable
 
-	Menu.prototype.draw = function(universe, world, display)
+	draw(universe, world, display)
 	{
 		var menu = this;
 		var pos = menu.pos;
@@ -191,6 +187,6 @@ function Menu
 
 			} // end for
 		}
-	};
+	}
 
 }

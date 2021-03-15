@@ -1,8 +1,9 @@
+
 function main()
 {
 	var universe = new DemoData().universe();
 
-	var display = new Display
+	var display = new Display2D
 	(
 		[ new Coords(300, 225) ],
 		"Font", // fontName

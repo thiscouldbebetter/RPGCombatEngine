@@ -1,26 +1,27 @@
 
-function Party(name, intelligence, agents)
+class Party
 {
-	this.name = name;
-	this.intelligence = intelligence;
-	this.agents = agents;
-
-	this.agentIndexCurrent = null;
-
-	for (var i = 0; i < this.agents.length; i++)
+	constructor(name, intelligence, agents)
 	{
-		var agent = this.agents[i];
-		agent.party = this;
-	}
-}
+		this.name = name;
+		this.intelligence = intelligence;
+		this.agents = agents;
 
-{
-	Party.prototype.agentCurrent = function()
+		this.agentIndexCurrent = null;
+
+		for (var i = 0; i < this.agents.length; i++)
+		{
+			var agent = this.agents[i];
+			agent.party = this;
+		}
+	}
+
+	agentCurrent()
  	{
 		return (this.agentIndexCurrent == null ? null : this.agents[this.agentIndexCurrent]);
 	}
 
-	Party.prototype.agentCurrentAdvance = function()
+	agentCurrentAdvance()
 	{
 		if (this.agentIndexCurrent == null)
 		{
@@ -36,12 +37,12 @@ function Party(name, intelligence, agents)
 		}
 	}
 
-	Party.prototype.agentsActive = function()
+	agentsActive()
 	{
 		return this.agents.filter(x => x.integrity > 0);
 	}
 
-	Party.prototype.initializeForEncounter = function(encounter)
+	initializeForEncounter(encounter)
 	{
 		for (var i = 0; i < this.agents.length; i++)
 		{
@@ -50,14 +51,14 @@ function Party(name, intelligence, agents)
 		}
 	}
 
-	Party.prototype.updateEncounterForTimerTick = function(encounter)
+	updateEncounterForTimerTick(encounter)
 	{
 		// do nothing
 	}
 
 	// drawable
 
-	Party.prototype.draw = function(universe, world, display)
+	draw(universe, world, display)
 	{
 		var panes = universe.encounter.defn().panes;
 
@@ -68,8 +69,8 @@ function Party(name, intelligence, agents)
 			"Party",
 			paneForStatus.pos,
 			new Coords(0, 8), // spacing
-			null, // updateEncounter
 			this, // menuable
+			null, // updateEncounter
 			Menu.menuablesToMenus
 			(
 				this.agents,

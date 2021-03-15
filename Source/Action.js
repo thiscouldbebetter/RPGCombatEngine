@@ -1,16 +1,13 @@
 
-// classes
-
-function Action()
+class Action
 {
-	this.status = ActionStatus.Instances.None;
-	this.parameters = [];
-}
+	constructor()
+	{
+		this.status = ActionStatus.Instances().None;
+		this.parameters = [];
+	}
 
-{
-	// instance methods
-
-	Action.prototype.defn = function(agent)
+	defn(agent)
 	{
 		var returnValue = agent.defn().actionDefns[this.defnName];
 
@@ -22,38 +19,39 @@ function Action()
 		return returnValue;
 	}
 
-	Action.prototype.target = function()
+	target()
 	{
 		return this.parameters["Target"];
 	}
 
-	Action.prototype.target_Set = function(valueToSet)
+	target_Set(valueToSet)
 	{
 		this.parameters["Target"] = valueToSet;
 	}
 
-	Action.prototype.updateEncounterAndAgentForTimerTick = function(encounter, agent)
+	updateEncounterAndAgentForTimerTick(encounter, agent)
 	{
 		var intelligence = encounter.partyCurrent().intelligence;
 
-		if (this.status == ActionStatus.Instances.None)
+		var actionStatuses = ActionStatus.Instances();
+		if (this.status == actionStatuses.None)
 		{
 			intelligence.actionInitialize(this, encounter, agent);
 		}
-		else if (this.status == ActionStatus.Instances.AwaitingActionDefn)
+		else if (this.status == actionStatuses.AwaitingActionDefn)
 		{
 			intelligence.decideActionDefn(this, encounter, agent);
 		}
-		else if (this.status == ActionStatus.Instances.AwaitingTarget)
+		else if (this.status == actionStatuses.AwaitingTarget)
 		{
 			intelligence.decideActionTarget(this, encounter, agent);
 		}
-		else if (this.status == ActionStatus.Instances.Running)
+		else if (this.status == actionStatuses.Running)
 		{
 			var actionDefn = this.defn(agent);
 			actionDefn.perform(encounter, agent, this);
 		}
-		else if (this.status == ActionStatus.Instances.Complete)
+		else if (this.status == actionStatuses.Complete)
 		{
 			//encounter.entitiesToRemove.push(agent.action);
 			agent.action = null;

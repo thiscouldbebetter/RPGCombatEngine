@@ -1,6 +1,9 @@
 
-function ImageLibrary(images)
+class ImageLibrary
 {
-	this.images = images;
-	this.images.addLookupsByName();
+	constructor(images)
+	{
+		this.images = images;
+		this.images.addLookupsByName();
+	}
 }

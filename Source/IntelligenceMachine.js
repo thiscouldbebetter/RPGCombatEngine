@@ -1,23 +1,22 @@
 
-function IntelligenceMachine()
-{}
+class IntelligenceMachine
 {
-	IntelligenceMachine.prototype.actionInitialize = function(action, encounter, agent)
+	actionInitialize(action, encounter, agent)
 	{
-		action.status = ActionStatus.Instances.AwaitingActionDefn;
+		action.status = ActionStatus.Instances().AwaitingActionDefn;
 	}
 
-	IntelligenceMachine.prototype.decideActionDefn = function(action, encounter, agent)
+	decideActionDefn(action, encounter, agent)
 	{
 		var actionDefnsAvailable = agent.defn().actionDefns;
 		var actionDefnIndex = Math.floor(Math.random(), actionDefnsAvailable.length);
 		var actionDefnChosen = actionDefnsAvailable[actionDefnIndex];
 		action.defnName = actionDefnChosen.name;
 
-		action.status = ActionStatus.Instances.AwaitingTarget;
+		action.status = ActionStatus.Instances().AwaitingTarget;
 	}
 
-	IntelligenceMachine.prototype.decideActionTarget = function(action, encounter, agent)
+	decideActionTarget(action, encounter, agent)
 	{
 		var target = action.target();
 		if (target == null)
@@ -30,6 +29,6 @@ function IntelligenceMachine()
 			action.parameters["EmptyForPosToReturnTo"] = new Empty(agent.pos.clone());
 		}
 
-		action.status = ActionStatus.Instances.Running;
+		action.status = ActionStatus.Instances().Running;
 	}
 }

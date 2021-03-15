@@ -1,11 +1,12 @@
 
-function VisualFallthrough(children)
+class VisualFallthrough
 {
-	this.children = children;
-}
+	constructor(children)
+	{
+		this.children = children;
+	}
 
-{
-	VisualFallthrough.prototype.draw = function(universe, world, display, entity)
+	draw(universe, world, display, entity)
 	{
 		for (var i = 0; i < this.children.length; i++)
 		{

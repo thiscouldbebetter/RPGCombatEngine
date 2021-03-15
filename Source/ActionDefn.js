@@ -1,14 +1,11 @@
 
-function ActionDefn
-(
-	name,
-	requiresTarget, 
-	perform,
-	toMenu
-)
+class ActionDefn
 {
-	this.name = name;
-	this.requiresTarget = requiresTarget;
-	this.perform = perform;
-	this.toMenu = toMenu;
+	constructor(name, requiresTarget, perform, toMenu)
+	{
+		this.name = name;
+		this.requiresTarget = requiresTarget;
+		this.perform = perform;
+		this.toMenu = toMenu;
+	}
 }

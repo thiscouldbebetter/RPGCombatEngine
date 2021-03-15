@@ -1,11 +1,13 @@
 
-function InputHelper()
+class InputHelper
 {
-	this.keyPressed = null;
-	this.hasKeyPressedBeenProcessed = false;
-}
-{
-	InputHelper.prototype.initialize = function()
+	constructor()
+	{
+		this.keyPressed = null;
+		this.hasKeyPressedBeenProcessed = false;
+	}
+
+	initialize()
 	{
 		document.body.onkeydown = this.handleEventKeyDown.bind(this);
 		document.body.onkeyup = this.handleEventKeyUp.bind(this);
@@ -13,7 +15,7 @@ function InputHelper()
 
 	// events
 
-	InputHelper.prototype.handleEventKeyDown = function(event)
+	handleEventKeyDown(event)
 	{
 		var key = event.key;
 		this.keyPressed = key;
@@ -24,7 +26,7 @@ function InputHelper()
 		}
 	}
 
-	InputHelper.prototype.handleEventKeyUp = function(e)
+	handleEventKeyUp(e)
 	{
 		this.keyPressed = null;
 		this.hasKeyPressedBeenProcessed = false;

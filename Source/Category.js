@@ -1,5 +1,8 @@
 
-function Category(name)
+class Category
 {
-	this.name = name;
+	constructor(name)
+	{
+		this.name = name;
+	}
 }

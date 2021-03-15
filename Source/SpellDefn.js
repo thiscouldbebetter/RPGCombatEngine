@@ -1,6 +1,9 @@
 
-function SpellDefn(name, apply)
+class SpellDefn
 {
-	this.name = name;
-	this.apply = apply;
+	constructor(name, apply)
+	{
+		this.name = name;
+		this.apply = apply;
+	}
 }

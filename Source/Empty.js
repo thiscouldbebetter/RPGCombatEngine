@@ -1,5 +1,8 @@
 
-function Empty(pos)
+class Empty
 {
-	this.pos = pos;
+	constructor(pos)
+	{
+		this.pos = pos;
+	}
 }

@@ -1,14 +1,15 @@
 
-function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
+class Display
 {
-	this.sizeInPixels = sizeInPixels;
-	this.fontHeightInPixels = fontHeightInPixels;
-	this.colorFore = colorFore;
-	this.colorBack = colorBack;
-}
+	constructor(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
+	{
+		this.sizeInPixels = sizeInPixels;
+		this.fontHeightInPixels = fontHeightInPixels;
+		this.colorFore = colorFore;
+		this.colorBack = colorBack;
+	}
 
-{
-	Display.prototype.clear = function()
+	clear()
 	{
 		this.drawRectangle
 		(
@@ -17,7 +18,7 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 		);
 	}
 
-	Display.prototype.drawArrow = function(pos)
+	drawArrow(pos)
 	{
 		var size = new Coords(1, 1).multiplyScalar(8);
 
@@ -30,7 +31,7 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 		this.graphics.stroke();
 	}
 
-	Display.prototype.drawImage = function(systemImage, pos, size)
+	drawImage(systemImage, pos, size)
 	{
 		if (size == null)
 		{
@@ -51,7 +52,7 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 		}
 	}
 
-	Display.prototype.drawImageSlice = function
+	drawImageSlice
 	(
 		systemImage, sliceOffset, sliceSize, drawPos, drawSize
 	)
@@ -82,7 +83,7 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 
 
 
-	Display.prototype.drawRectangle = function(pos, size, colorFill, colorBorder)
+	drawRectangle(pos, size, colorFill, colorBorder)
 	{
 		if (colorFill != null)
 		{
@@ -103,7 +104,7 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 		}
 	}
 
-	Display.prototype.drawText = function(textToDraw, pos, colorFill, colorBorder)
+	drawText(textToDraw, pos, colorFill, colorBorder)
 	{
 		var textToDrawAsLines = textToDraw.split("\n");
 
@@ -128,7 +129,7 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 				(
 					textLine,
 					pos.x + 2, // hack
-					pos.y + this.fontHeightInPixels * (i + 1)			
+					pos.y + this.fontHeightInPixels * (i + 1)
 				);
 			}
 
@@ -141,7 +142,7 @@ function Display(sizeInPixels, fontHeightInPixels, colorFore, colorBack)
 		}
 	}
 
-	Display.prototype.initialize = function()
+	initialize()
 	{
 		var canvas = document.createElement("canvas");
 		canvas.width = this.sizeInPixels.x;

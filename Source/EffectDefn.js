@@ -1,6 +1,9 @@
 
-function EffectDefn(name, apply)
+class EffectDefn
 {
-	this.name = name;
-	this.apply = apply;
+	constructor(name, apply)
+	{
+		this.name = name;
+		this.apply = apply;
+	}
 }

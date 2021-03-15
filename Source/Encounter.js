@@ -1,20 +1,21 @@
 
-function Encounter(defnName, parties)
+class Encounter
 {
-	this.defnName = defnName;
-	this.parties = parties;
+	constructor(defnName, parties)
+	{
+		this.defnName = defnName;
+		this.parties = parties;
 
-	this.entities = [];
-	this.entitiesToSpawn = [];
-	this.entitiesToRemove = [];
+		this.entities = [];
+		this.entitiesToSpawn = [];
+		this.entitiesToRemove = [];
 
-	this.entitiesToSpawn = this.entitiesToSpawn.concat(this.parties);
+		this.entitiesToSpawn = this.entitiesToSpawn.concat(this.parties);
 
-	this.agentCurrent = null;
-}
+		this.agentCurrent = null;
+	}
 
-{
-	Encounter.prototype.agentCurrentAdvance = function()
+	agentCurrentAdvance()
 	{
 		var agentNext = null;
 
@@ -46,12 +47,12 @@ function Encounter(defnName, parties)
 		this.agentCurrent = agentNext;
 	}
 
-	Encounter.prototype.defn = function()
+	defn()
 	{
 		return Globals.Instance.universe.encounterDefns[this.defnName];
 	}
 	
-	Encounter.prototype.entitiesSpawn = function()
+	entitiesSpawn()
 	{
 		for (var i = 0; i < this.entitiesToSpawn.length; i++)
 		{
@@ -66,7 +67,7 @@ function Encounter(defnName, parties)
 		this.entitiesToSpawn.length = 0;
 	}
 
-	Encounter.prototype.initialize = function()
+	initialize()
 	{
 		this.entitiesSpawn();
 
@@ -83,12 +84,12 @@ function Encounter(defnName, parties)
 		this.agentCurrentAdvance();
 	}
 
-	Encounter.prototype.partyCurrent = function()
+	partyCurrent()
 	{
 		return (this.agentCurrent.party);
 	}
 
-	Encounter.prototype.updateForTimerTick = function(universe, world)
+	updateForTimerTick(universe, world)
 	{
 		this.entitiesSpawn();
 
@@ -115,7 +116,7 @@ function Encounter(defnName, parties)
 		this.draw(universe, world, Globals.Instance.display);
 	};
 
-	Encounter.prototype.updateForTimerTick_WinOrLose = function()
+	updateForTimerTick_WinOrLose()
 	{
 		for (var p = 0; p < this.parties.length; p++)
 		{
@@ -141,7 +142,7 @@ function Encounter(defnName, parties)
 
 	// drawable
 
-	Encounter.prototype.draw = function(universe, world, display)
+	draw(universe, world, display)
 	{
 		var encounter = this;
 		display.clear();

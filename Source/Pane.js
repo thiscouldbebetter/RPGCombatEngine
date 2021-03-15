@@ -1,15 +1,16 @@
 
-function Pane(name, pos, size)
+class Pane
 {
-	this.name = name;
-	this.pos = pos;
-	this.size = size;
-}
+	constructor(name, pos, size)
+	{
+		this.name = name;
+		this.pos = pos;
+		this.size = size;
+	}
 
-{
 	// drawable
 
-	Pane.prototype.draw = function(universe, world, display)
+	draw(universe, world, display)
 	{
 		display.drawRectangle
 		(

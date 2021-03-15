@@ -1,12 +1,7 @@
 
-// demo
-
-function DemoData()
+class DemoData
 {
-	// do nothing
-}
-{
-	DemoData.prototype.universe = function()
+	universe()
 	{
 		var imageDirectory = "../Media/Images/";
 
@@ -66,7 +61,7 @@ function DemoData()
 
 	} // end method
 
-	DemoData.prototype.universe_1_ItemDefns = function(categories)
+	universe_1_ItemDefns(categories)
 	{
 		var itemDefns =
 		[
@@ -173,7 +168,7 @@ function DemoData()
 
 	}
 
-	DemoData.prototype.universe_2_ActionDefns = function()
+	universe_2_ActionDefns()
 	{
 		var actionDefnsCommon =
 		[
@@ -213,7 +208,7 @@ function DemoData()
 						{
 							agent.pos.overwriteWith(emptyToReturnTo.pos);
 							action.target_Set(null);
-							action.status = ActionStatus.Instances.Complete;
+							action.status = ActionStatus.Instances().Complete;
 						}
 						else
 						{
@@ -240,7 +235,7 @@ function DemoData()
 				false, // requiresTarget
 				function perform(encounter, agent, action)
 				{
-					action.status = ActionStatus.Instances.Complete;
+					action.status = ActionStatus.Instances().Complete;
 				},
 				null // toMenu
 			),
@@ -252,7 +247,7 @@ function DemoData()
 				// updateEncounter
 				function perform(encounter, agent, action)
 				{
-					action.status = ActionStatus.Instances.Complete;
+					action.status = ActionStatus.Instances().Complete;
 				},
 				// toMenu
 				function()
@@ -281,7 +276,7 @@ function DemoData()
 								var action = agent.action;
 								action.parameters["SpellDefn"] = spellDefn;
 								action.defnName = "Spell";
-								action.status = ActionStatus.Instances.AwaitingTarget;
+								action.status = ActionStatus.Instances().AwaitingTarget;
 							}
 						),
 						0 // indexOfChildSelected
@@ -327,7 +322,7 @@ function DemoData()
 						{
 							agent.pos.overwriteWith(emptyToReturnTo.pos);
 							action.target_Set(null);
-							action.status = ActionStatus.Instances.Complete;
+							action.status = ActionStatus.Instances().Complete;
 						}
 						else
 						{
@@ -355,7 +350,7 @@ function DemoData()
 				false, // requiresTarget
 				function perform(encounter, agent, action)
 				{
-					action.status = ActionStatus.Instances.Complete;
+					action.status = ActionStatus.Instances().Complete;
 				},
 				function toMenu()
 				{
@@ -371,11 +366,10 @@ function DemoData()
 						panes["Menu_Player"].pos, // pos
 						new Coords(0, 8), // spacing
 						null, // menuable
-						function updateEncounter(encounter)
+						(encounter, agent) => // updateEncounter
 						{
-							var agent = encounter.agentCurrent;
 							var action = agent.action;
-							action.status = ActionStatus.Instances.None;
+							action.status = ActionStatus.Instances().None;
 						},
 						Menu.menuablesToMenus
 						(
@@ -388,7 +382,7 @@ function DemoData()
 								var action = agent.action;
 								action.defnName = "ItemUse";
 								agent.itemsEquipped["ItemToUse"] = item;
-								action.status = ActionStatus.Instances.AwaitingTarget;
+								action.status = ActionStatus.Instances().AwaitingTarget;
 							}
 						),
 						0 // indexOfChildSelected
@@ -434,7 +428,7 @@ function DemoData()
 						{
 							agent.pos.overwriteWith(emptyToReturnTo.pos);
 							action.target_Set(null);
-							action.status = ActionStatus.Instances.Complete;
+							action.status = ActionStatus.Instances().Complete;
 						}
 						else
 						{
@@ -468,7 +462,7 @@ function DemoData()
 				function perform(encounter, agent, action)
 				{
 					// todo
-					action.status = ActionStatus.Instances.Complete;
+					action.status = ActionStatus.Instances().Complete;
 				},
 				null // toMenu
 			),
@@ -479,7 +473,7 @@ function DemoData()
 		return actionDefnsCommon;
 	}
 
-	DemoData.prototype.universe_3_AgentDefns = function(actionDefnsCommon)
+	universe_3_AgentDefns(actionDefnsCommon)
 	{
 		var agentSizeInPixelsStandard = new Coords(24, 24);
 
@@ -767,7 +761,7 @@ function DemoData()
 		return agentDefns;
 	}
 
-	DemoData.prototype.universe_4_Encounter = function(encounterDefns, agentDefns, itemDefns)
+	universe_4_Encounter(encounterDefns, agentDefns, itemDefns)
 	{
 		var encounter = new Encounter
 		(

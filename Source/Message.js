@@ -1,8 +1,11 @@
 
-function Message(text, pos)
+class Message
 {
-	this.text = text;
-	this.pos = pos;
+	constructor(text, pos)
+	{
+		this.text = text;
+		this.pos = pos;
 
-	this.ticksToLive = 100;
+		this.ticksToLive = 100;
+	}
 }
