@@ -4,7 +4,7 @@ class Menu
 	text: string;
 	pos: Coords;
 	spacing: Coords;
-	menuable: any,
+	menuable: any;
 	updateEncounter: any;
 	children: Menu[];
 	indexOfChildSelected: number;

@@ -3,7 +3,7 @@ class AgentDefn
 {
 	name: string;
 	visual: Visual;
-	sizeInPixels: Coords,
+	sizeInPixels: Coords;
 	integrityMax: number;
 	energyMax: number;
 	initiativeRange: Range2;
